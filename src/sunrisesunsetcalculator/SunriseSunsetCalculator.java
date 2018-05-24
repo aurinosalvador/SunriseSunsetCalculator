@@ -1,6 +1,5 @@
 package sunrisesunsetcalculator;
 
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 /**
@@ -12,7 +11,7 @@ public class SunriseSunsetCalculator {
     private double alpha;
     
     //Converte a Latitude de graus para decimal
-    public Double getLatitude(String lat){
+    private Double getLatitude(String lat){
         double decLat;
         Boolean neg = false;
         String strLatDeg = lat.substring(0, lat.indexOf("."));
@@ -34,7 +33,7 @@ public class SunriseSunsetCalculator {
     }
     
     //Converte a Longitude de graus para decimal
-    public Double getLongitude(String longi){
+    private Double getLongitude(String longi){
         double decLongi;
         Boolean neg = false;
         String strLonDeg = longi.substring(0, longi.indexOf("."));
@@ -57,7 +56,7 @@ public class SunriseSunsetCalculator {
     
     // Convert radian angle to degrees
 
-    public double radToDeg(double angleRad){
+    private double radToDeg(double angleRad){
 		return (180.0 * angleRad / Math.PI);
 	}
 
@@ -65,11 +64,11 @@ public class SunriseSunsetCalculator {
 
     // Convert degree angle to radians
 
-    public double degToRad(double angleDeg){
+    private double degToRad(double angleDeg){
 		return (Math.PI * angleDeg / 180.0);
 	}
     
-    public double calcJD(GregorianCalendar calendar){
+    private double calcJD(GregorianCalendar calendar){
         int day = calendar.getTime().getDate();
         int month = calendar.getTime().getMonth() + 1;
         int year = calendar.getTime().getYear() + 1900;
@@ -85,13 +84,13 @@ public class SunriseSunsetCalculator {
         return jd;
     }
     
-    public String calcDayOfWeek(double juld){
+    private String calcDayOfWeek(double juld){
         int  a = (int) (juld + 1.5) % 7;
         String dow = (a==0)?"Sunday":(a==1)?"Monday":(a==2)?"Tuesday":(a==3)?"Wednesday":(a==4)?"Thursday":(a==5)?"Friday":"Saturday";
         return dow;
     }
     
-    public double calcDayOfYear(GregorianCalendar calendar, Boolean lpyr){
+    private double calcDayOfYear(GregorianCalendar calendar, Boolean lpyr){
         int month = calendar.getTime().getMonth() + 1;
         int day = calendar.getTime().getDate();
         
@@ -101,25 +100,25 @@ public class SunriseSunsetCalculator {
         return doy;
     }
     
-    public double calcTimeJulianCent(double jd){
+    private double calcTimeJulianCent(double jd){
         double t = (jd - 2451545.0)/36525.0;
         return t;
     }
     
-    public double calcMeanObliquityOfEcliptic(double t){
+    private double calcMeanObliquityOfEcliptic(double t){
         double seconds = 21.448 - t*(46.8150 + t*(0.00059 - t*(0.001813)));
         double e0 = 23.0 + (26.0 + (seconds/60.0))/60.0;
 	return e0;	// in degrees
     }
     
-    public double calcObliquityCorrection(double t){
+    private double calcObliquityCorrection(double t){
         double e0 = calcMeanObliquityOfEcliptic(t);
         double omega = 125.04 - 1934.136 * t;
         double e = e0 + 0.00256 * Math.cos(degToRad(omega));
         return e;
     }
     
-    public double calcGeomMeanLongSun(double t){
+    private double calcGeomMeanLongSun(double t){
         double l0 = 280.46646 + t * (36000.76983 + 0.0003032 * t);
         while(l0 > 360.0){
             l0 -= 360.0;
@@ -130,12 +129,12 @@ public class SunriseSunsetCalculator {
         return l0;
     }
     
-    public double calcGeomMeanAnomalySun(double t){
+    private double calcGeomMeanAnomalySun(double t){
         double m = 357.52911 + t * (35999.05029 - 0.0001537 * t);
         return m;
     }
     
-    public double calcSunEqOfCenter(double t){
+    private double calcSunEqOfCenter(double t){
         double m = calcGeomMeanAnomalySun(t);
         double mrad = degToRad(m);
         double sinm = Math.sin(mrad);
@@ -146,21 +145,21 @@ public class SunriseSunsetCalculator {
         return c;		// in degrees
     }
     
-    public double calcSunTrueLong(double t){
+    private double calcSunTrueLong(double t){
         double l0 = calcGeomMeanLongSun(t);
         double c = calcSunEqOfCenter(t);
         double o = l0 + c;
         return o;
     }
     
-    public double calcSunApparentLong(double t){
+    private double calcSunApparentLong(double t){
         double o = calcSunTrueLong(t);
         double omega = 125.04 - 1934.136 * t;
         double lambda = o - 0.00569 - 0.00478 * Math.sin(degToRad(omega));
 	return lambda;		// in degrees
     }
     
-    public double calcSunRtAscension(double t){
+    private double calcSunRtAscension(double t){
         double e = calcObliquityCorrection(t);
         double lambda = calcSunApparentLong(t);
         
@@ -170,7 +169,7 @@ public class SunriseSunsetCalculator {
         return alpha;		// in degrees
     }
         
-    public double calcSunDeclination(double t){
+    private double calcSunDeclination(double t){
         double e = calcObliquityCorrection(t);
         double lambda = calcSunApparentLong(t);
         
@@ -179,12 +178,12 @@ public class SunriseSunsetCalculator {
         return theta;		// in degrees
     }
     
-    public double calcEccentricityEarthOrbit(double t){
+    private double calcEccentricityEarthOrbit(double t){
         double e = 0.016708634 - t * (0.000042037 + 0.0000001267 * t);
 	return e;		// unitless
     }
     
-    public double calcEquationOfTime(double t){
+    private double calcEquationOfTime(double t){
         double epsilon = calcObliquityCorrection(t);
         double l0 = calcGeomMeanLongSun(t);
         double e = calcEccentricityEarthOrbit(t);
@@ -205,12 +204,12 @@ public class SunriseSunsetCalculator {
         return radToDeg(etime)*4.0;	// in minutes of time
     }
     
-    public double calcJDFromJulianCent(double t){
+    private double calcJDFromJulianCent(double t){
         double jd = t * 36525.0 + 2451545.0;
 	return jd;
     }
     
-    public double calcSolNoonUTC(double t, double longitude){
+    private double calcSolNoonUTC(double t, double longitude){
         // First pass uses approximate solar noon to calculate eqtime
         double tnoon = calcTimeJulianCent(calcJDFromJulianCent(t) + longitude/360.0);
         //System.out.println(tnoon);
@@ -229,7 +228,7 @@ public class SunriseSunsetCalculator {
         return solNoonUTC;
     }
     
-    public double calcHourAngleSunrise(double latitude, double solarDec){
+    private double calcHourAngleSunrise(double latitude, double solarDec){
         double latRad = degToRad(latitude);
         double sdRad  = degToRad(solarDec);
         
@@ -241,7 +240,7 @@ public class SunriseSunsetCalculator {
         
     }
     
-    public double calcSunriseUTC(double jd, double latitude, double longitude){
+    private double calcSunriseUTC(double jd, double latitude, double longitude){
         double t = calcTimeJulianCent(jd);
         // *** Find the time of solar noon at the location, and use
         //     that declination. This is better than start of the 
@@ -276,7 +275,7 @@ public class SunriseSunsetCalculator {
         
     }
         
-    public Boolean isNumber(double inputVal){
+    private Boolean isNumber(double inputVal){
         boolean oneDecimal = false;
 		String inputStr = "" + inputVal;
 		for (int i = 0; i < inputStr.length(); i++){
@@ -295,7 +294,7 @@ public class SunriseSunsetCalculator {
             return true;
     }
     
-    public double calcHourAngleSunset(double latitude, double solarDec){
+    private double calcHourAngleSunset(double latitude, double solarDec){
         double latRad = degToRad(latitude);
         double sdRad  = degToRad(solarDec);
 
@@ -306,7 +305,7 @@ public class SunriseSunsetCalculator {
         return -HA;		// in radians
     }
     
-    public double calcSunsetUTC(double jd, double latitude, double longitude){
+    private double calcSunsetUTC(double jd, double latitude, double longitude){
         double t = calcTimeJulianCent(jd);
         
         // *** Find the time of solar noon at the location, and use
@@ -338,7 +337,7 @@ public class SunriseSunsetCalculator {
         return timeUTC;
     }
     
-    public String calcDayFromJD(double jd){
+    private String calcDayFromJD(double jd){
 		double z = Math.floor(jd + 0.5);
 		double f = (jd + 0.5) - z; 
                 double A;
@@ -362,7 +361,7 @@ public class SunriseSunsetCalculator {
                 return ((day<10 ? "0" : "") + day + month);//TODO verificar se vai funcionar
 	}
     
-    public String timeStringShortAMPM(double minutes, double jd){
+    private String timeStringShortAMPM(double minutes, double jd){
         double julianday = jd;
         double floatHour = minutes / 60.0;
         int hour = (int) Math.floor(floatHour);
@@ -417,7 +416,7 @@ public class SunriseSunsetCalculator {
 
     }
     
-    public String timeStringDate(double minutes, double jd){ 
+    private String timeStringDate(double minutes, double jd){ 
         double julianday = jd;
         double floatHour = minutes / 60.0;
         int hour = (int) Math.floor(floatHour);
@@ -456,7 +455,7 @@ public class SunriseSunsetCalculator {
         return timeStr;
     }
     
-    public String timeString(double minutes){
+    private String timeString(double minutes){
         double floatHour = minutes / 60.0;
         int hour = (int) Math.floor(floatHour);
         double floatMinute = 60.0 * (floatHour - Math.floor(floatHour));
