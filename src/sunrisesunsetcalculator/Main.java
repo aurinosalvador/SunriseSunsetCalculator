@@ -23,8 +23,12 @@ public class Main {
     public static void main(String[] args) {
         SunriseSunsetCalculator calc = new SunriseSunsetCalculator();
         GregorianCalendar calendar = new GregorianCalendar();
-        calendar.set(2018, 4, 25);
-        System.out.println(calc.calcSun(calendar, "-07.1247", "-39.1855", false, -3));
+        calendar.getTime();
+        String lat = "-07.1247";
+        String longi = "-39.1855";
+        boolean daySaving = false;
+        int timeZone = -3;
+        System.out.println(calc.calcSun(calendar, lat , longi, daySaving, timeZone));
 
 
     }
