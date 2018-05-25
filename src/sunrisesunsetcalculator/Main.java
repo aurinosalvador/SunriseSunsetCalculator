@@ -1,18 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package sunrisesunsetcalculator;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Locale;
-import java.util.TimeZone;
 
 /**
  *
- * @author aurino
+ * @author Aurino
  */
 public class Main {
 
@@ -21,16 +15,23 @@ public class Main {
      * @param args
      */
     public static void main(String[] args) {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
         SunriseSunsetCalculator calc = new SunriseSunsetCalculator();
-        GregorianCalendar calendar = new GregorianCalendar();
-        calendar.getTime();
-        String lat = "-07.1247";
-        String longi = "-39.1855";
+        
+        GregorianCalendar calendar = new GregorianCalendar(2018, 3, 3);
+        
+        double latitude = -22.160271;
+        double longitude = -42.421823;
         boolean daySaving = false;
         int timeZone = -3;
-        System.out.println(calc.calcSun(calendar, lat , longi, daySaving, timeZone));
 
+        SunriseSunsetModel model = SunriseSunsetCalculator.calcSun(calendar, latitude, longitude, daySaving, timeZone);
 
+        System.out.println("Sunrise: " + sdf.format(model.getSunrise().getTime()));
+        System.out.println("Sunset: " + sdf.format(model.getSunset().getTime()));
+        System.out.println("Solar Noon: " + sdf.format(model.getSolarNoon().getTime()));
     }
 
 }
